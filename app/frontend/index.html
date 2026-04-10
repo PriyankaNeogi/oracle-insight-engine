@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oracle Insight Engine</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 700px;
+            margin: 50px auto;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Oracle Insight Engine</h2>
+
+<textarea id="query" placeholder="Type your question..."></textarea>
+<br>
+<button onclick="ask()">Ask</button>
+
+<h3>Response:</h3>
+<pre id="result"></pre>
+
+<script>
+async function ask() {
+    const query = document.getElementById("query").value;
+    const resultBox = document.getElementById("result");
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/query", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ query })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            resultBox.innerText = "Error: " + data.error;
+            return;
+        }
+
+        const response = data.data;
+
+        // FINANCIAL
+        if (response.route === "financial") {
+            const value = response.result[0][0];
+
+            resultBox.innerText =
+                "Revenue: $" + (value / 1_000_000_000).toFixed(2) + " Billion\n" +
+                "Source: Database";
+        }
+
+        // RAG
+        else if (response.route === "rag") {
+            const points = response.answer.main_points;
+            const pages = response.answer.source_pages;
+
+            resultBox.innerText =
+                "Answer:\n\n" +
+                points.join("\n") +
+                "\n\nSource: PDF Document\n" +
+                "Pages: " + (pages.length ? pages.join(", ") : "Not available");
+        }
+
+        else {
+            resultBox.innerText = "Unhandled response type";
+        }
+
+    } catch (err) {
+        resultBox.innerText = "Error: " + err.message;
+    }
+}
+</script>
+
+</body>
+</html>

@@ -9,5 +9,6 @@ class Settings:
     PINECONE_ENV = os.getenv("PINECONE_ENV")
     INDEX_NAME = os.getenv("INDEX_NAME", "rag-index")
     EMBEDDING_MODEL = "text-embedding-3-small"
+    SQL_DB_PATH = "data/financials.db"
 
 settings = Settings()
