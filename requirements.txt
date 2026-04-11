@@ -9,3 +9,6 @@ python-dotenv
 pypdf
 unstructured
 duckdb
+sec-edgar-downloader
+beautifulsoup4
+lxml

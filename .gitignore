@@ -2,3 +2,11 @@
 .env.backup
 __pycache__/
 *.pyc
+
+# Data folders
+data/
+sec-edgar-filings/
+
+# Python cache
+__pycache__/
+*.pyc
